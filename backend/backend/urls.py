@@ -26,8 +26,5 @@ urlpatterns = [
     path('api/orders/', include('drf.urls.order_urls')),
     path('api/users/', include('drf.urls.user_urls')),
     path('api-auth/', include('rest_framework.urls')),
-    # ???? namespace='drf' is mandatory
-    path('api-auth/', include('drf_social_oauth2.urls', namespace='drf')),
-    path('api-auth/', include('drf.urls.user_urls'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

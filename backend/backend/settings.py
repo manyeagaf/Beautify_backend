@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from ctypes import cast
 from datetime import timedelta
 from pathlib import Path
-import environ
+from decouple import config
 
-env = environ.Env()
-environ.Env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*8v5#v!9*9cga0m3+-ag47adx0y%*iixwus0nei)w%d4-fp(ef'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG',cast = bool)
 
 ALLOWED_HOSTS = [
 "*"
@@ -55,43 +55,23 @@ INSTALLED_APPS = [
     # External
     'mptt',
     'rest_framework',
-    'oauth2_provider',
-    'social_django',
+    'rest_framework.authtoken',
     'drf_social_oauth2',
 
 ]
 
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.facebook.FacebookAppOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
 
-    'drf_social_oauth2.backends.DjangoOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
-# Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = '595627678349336'
-SOCIAL_AUTH_FACEBOOK_SECRET = '6f3ff3a947d22261983e52a0c7bd70e2'
-# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
-# Email is not sent by default, to get it, you must request the email permission.
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id, name, email'
-}
-SOCIAL_AUTH_USER_FIELDS = ['email', 'first_name', 'username', 'password']
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "your google oauth2 key"
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "your google oauth2 secret"
-# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-]
+
 REST_FRAMEWORK = {
+    
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'drf_social_oauth2.authentication.SocialAuthentication',
+        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+    
 }
+
+
 
 # Custom user model
 AUTH_USER_MODEL = "user.CustomUser"
@@ -229,6 +209,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Custom setting. To email
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'manyeagaf@gmail.com'
-EMAIL_HOST_PASSWORD = 'pwcqbcjajvvvjjja'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

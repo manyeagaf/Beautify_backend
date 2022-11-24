@@ -1,3 +1,4 @@
-beautify_env
-.env
+/beautify_env
+/.env
 env
+frontend

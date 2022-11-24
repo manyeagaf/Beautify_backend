@@ -1,17 +1,15 @@
 from datetime import datetime
 from django.http import Http404
 from product.models import ProductAttributeValue, Product
-from order.models import Order, OrderItem, ShippingAddress
+from order.models import Order, OrderItem, ShippingAddress,PaymentMethod
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf.serializers import OrderItemSerializer, OrderSerializer
+from drf.serializers import OrderItemSerializer, OrderSerializer,PaymentMethodSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
-
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getOrders(request):
     orders = Order.objects.all()
     serializer = OrderSerializer(orders, many=True)
@@ -76,7 +74,8 @@ def creatOrder(request):
             image=item['image'][7:],
             name=item['name']
         )
-    serializer = OrderSerializer(order)
+    
+    serializer = OrderSerializer(order,many = False)
     return Response(serializer.data)
 
 
@@ -98,3 +97,11 @@ def updateOrderToDelivered(request, pk):
     order.delivered_at = datetime.now()
     order.save()
     return Response("Order updated to paid")
+
+@api_view(['GET'])
+
+def allPaymentMethods(request):
+    payments = PaymentMethod.objects.all()
+    serializer = PaymentMethodSerializer(payments,many = True)
+    return Response(serializer.data)
+

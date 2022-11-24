@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem, ShippingAddress
+from .models import Order, OrderItem, ShippingAddress,PaymentMethod
 
 # Register your models here.
 
@@ -19,3 +19,11 @@ class ShippinAddressAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['product', 'quantity', 'price']
     list_editable = ['quantity']
+
+@admin.register(PaymentMethod)
+class PaymentMethodAdmin(admin.ModelAdmin):
+
+    list_display = ['name', 'slug',]
+    prepopulated_fields = {'slug': ('name',)}
+    
+

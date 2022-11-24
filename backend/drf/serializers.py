@@ -1,15 +1,29 @@
 
 from dataclasses import dataclass
 from enum import unique
+from statistics import mode
 from wsgiref.validate import validator
 from rest_framework import serializers
 from product.models import Product, ProductAttribute, Stock, Category, Brand, Media, ProductAttributeValue
-from order.models import Order, OrderItem, ShippingAddress
+from order.models import Order, OrderItem, PaymentMethod, ShippingAddress
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import make_password
 from user.models import CustomUser
 
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        serializer = UserSerializerWithToken(self.user).data
+        for k,v in serializer.items():
+            data[k] = v
+        return data
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
@@ -54,7 +68,7 @@ class ProductAttributeValueSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name', 'is_active', 'slug']
+        fields = '__all__'
         read_only = True
 
 
@@ -131,7 +145,7 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-
+    
     class Meta:
         model = OrderItem
         fields = '__all__'
@@ -144,7 +158,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-
         fields = ['id', 'user', 'shipping_address', 'total_price',
                   'is_paid', 'is_delivered', 'order_items']
 
@@ -196,3 +209,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+class PaymentMethodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = '__all__'

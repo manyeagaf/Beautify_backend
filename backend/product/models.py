@@ -1,3 +1,4 @@
+from email.policy import default
 from this import d
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
@@ -30,6 +31,11 @@ class Category(MPTTModel):
     is_active = models.BooleanField(
         default=False,
     )
+    image = models.ImageField(unique=False,
+                               null=True,
+                               blank=False,
+                               default = "/sample.png",
+                               verbose_name=("category image"))
     parent = TreeForeignKey(
         "self",
         on_delete=models.PROTECT,
@@ -91,23 +97,26 @@ class Product(models.Model):
                                null=False,
                                blank=False,
                                verbose_name=("product image1"),
-                               default="images/default.png",
+                               default="/sample.png",
                                help_text=("format: required, default-default.png"),)
     image2 = models.ImageField(unique=False,
                                null=True,
                                blank=False,
+                               default = "/sample.png",
                                verbose_name=("product image2"),
 
                                help_text=("format: required, default-default.png"),)
     image3 = models.ImageField(unique=False,
                                null=True,
                                blank=True,
+                               default = "/sample.png",
                                verbose_name=("product image3"),
 
                                help_text=("format: required, default-default.png"),)
     image4 = models.ImageField(unique=False,
                                null=True,
                                blank=True,
+                               default = "//sample.png",
                                verbose_name=("product image4"),
 
                                help_text=("format: required, default-default.png"),)
@@ -142,7 +151,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True)
     rating = models.DecimalField(
-        max_digits=3, null=True, blank=True, decimal_places=1)
+        max_digits=3, decimal_places=1,default = 0.0)
     number_of_reviews = models.IntegerField(default=0)
     how_to_use = models.TextField(
         max_length=500, null=True, blank=True, default='How to use product')
@@ -191,7 +200,7 @@ class Media(models.Model):
                                 null=False,
                                 blank=False,
                                 verbose_name=("product image"),
-                                default="images/default.png",
+                                default="/sample.png",
                                 help_text=("format: required, default-default.png"),)
     alt_text = models.CharField(
         max_length=255,

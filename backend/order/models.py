@@ -39,6 +39,7 @@ class Order(models.Model):
         return str(self.id)
 
 
+
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, null=True, blank=True, on_delete=models.CASCADE)
@@ -49,9 +50,15 @@ class OrderItem(models.Model):
     image = models.ImageField(unique=False,
                               null=False,
                               blank=False,
-
                               default="images/default.png",
-                              help_text=("format: required, default-default.png"),)
+                              help_text=("format: required, default-default.png",),)
 
     def __str__(self):
         return str(self.id)
+
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length = 200)
+    slug = models.SlugField(max_length = 150)
+    
+
+
