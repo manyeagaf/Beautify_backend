@@ -1,2 +1,3 @@
 # Beautify
-### Beautify is an ecommerce website for beauty and fashion products.
+### Beautify is an ecommerce website for beauty,fashion and pet products.
+
