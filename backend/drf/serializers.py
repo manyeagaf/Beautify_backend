@@ -4,12 +4,13 @@ from enum import unique
 from statistics import mode
 from wsgiref.validate import validator
 from rest_framework import serializers
-from product.models import Product, ProductAttribute, Stock, Category, Brand, Media, ProductAttributeValue
+from product.models import Product, ProductAttribute, Stock, Category, Brand, Media, ProductAttributeValue,Review
 from order.models import Order, OrderItem, PaymentMethod, ShippingAddress
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import make_password
 from user.models import CustomUser
+from django.db.models import Sum
 
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -90,6 +91,8 @@ class ProductSerializer(serializers.ModelSerializer):
     media = ProductMediaSerializer(many=True, read_only=True)
     brand = BrandSerializer(read_only=True)
     category = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.SerializerMethodField(read_only = True)
+    number_of_reviews = serializers.SerializerMethodField(read_only = True)
 
     class Meta:
         model = Product
@@ -112,6 +115,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'rating',
             'category',
             'number_of_reviews',
+            
         ]
         read_only = True
 
@@ -119,6 +123,27 @@ class ProductSerializer(serializers.ModelSerializer):
         category = Category.objects.get(name=obj.category)
         serializer = CategorySerializer(category)
         return serializer.data
+    def get_rating(self,obj):
+        try:
+            rating = obj.reviews.aggregate(Sum('rating'))['rating__sum']/obj.reviews.count()
+            return rating
+        except TypeError:
+            return 0.0
+
+
+
+        return obj.reviews.aggregate(Sum('rating'),0.0)['rating__sum']/obj.reviews.count()
+
+    def get_number_of_reviews(self,obj):
+        return obj.reviews.count()
+
+
+
+#Review Serializer
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
 
 # User Serializers
 

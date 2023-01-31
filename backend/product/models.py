@@ -164,7 +164,18 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Review(models.Model):
+    product = models.ForeignKey(Product,related_name="reviews",on_delete=models.CASCADE)
+    comment = models.CharField(max_length=300,null=True,blank=True)
+    rating = models.DecimalField(max_digits=3,decimal_places=1,default=1.0)
+    created_at = models.DateTimeField(auto_now_add=True,editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = (["id"])
+
+    def __str__(self):
+        return self.comment
 class Stock(models.Model):
     product = models.OneToOneField(
         Product,

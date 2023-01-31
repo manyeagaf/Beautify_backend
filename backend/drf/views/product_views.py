@@ -6,7 +6,8 @@ from rest_framework import generics
 from product.models import Product, ProductAttribute, Stock, Category, Brand, Media, ProductAttributeValue
 
 
-from drf.serializers import CategorySerializer, BrandSerializer, ProductSerializer, ProductMediaSerializer, OrderItemSerializer, OrderSerializer
+from drf.serializers import (CategorySerializer, BrandSerializer, ProductSerializer,
+ProductMediaSerializer, OrderItemSerializer, OrderSerializer,ReviewSerializer,Review)
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from drf.pagination import StandardResultsSetPagination
@@ -25,34 +26,35 @@ class CategoryList(APIView):
         pass
 
 
-class ProductByCategory(APIView):
+class ProductByCategory(APIView,PageNumberPagination):
     """
     Return product by category
     """
+    page_size = 6
+
 
     def get(self, request, slug=None):
-        queryset = Product.objects.filter(category__slug=slug)
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
+        products = Product.objects.filter(category__slug=slug)
+        results = self.paginate_queryset(products, request, view=self)
+        serializer = ProductSerializer(results, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def post(self, request):
         pass
 
 
-class ProductsList(generics.ListCreateAPIView):
-    """
-    Return Sub Product by WebId
-    """
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    pagination_class = StandardResultsSetPagination
-    # def get(self, request):
-    #     queryset = Product.objects.all()
-    #     paginator = PageNumberPagination()
-    #     paginator.page_size = 1
-    #     results = paginator.paginate_queryset(queryset, request)
-    #     serializer = ProductSerializer(results, many=True)
-    #     return Response(serializer.data)
+class ProductsList(APIView,PageNumberPagination):
+    
+    # queryset = Product.objects.all()
+    # serializer_class = ProductSerializer
+    # pagination_class = StandardResultsSetPagination
+    page_size = 3
+    
+    def get(self, request):
+        products = Product.objects.all()
+        results = self.paginate_queryset(products, request, view=self)
+        serializer = ProductSerializer(results, many=True)
+        return self.get_paginated_response(serializer.data)
 
     # def post(self, request):
     #     serializer = ProductSerializer(data=request.data)
@@ -89,6 +91,18 @@ class ProductDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class ReviewsList(APIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    pagination_class = StandardResultsSetPagination
+    def get(self,request,pk):
+        # product = Product.objects.get(id = pk)
+        reviews = Review.objects.filter(product = pk)
+        serializer = ReviewSerializer(reviews,many = True)
+        return self.get_paginated_response(self.paginate_queryset(serializer.data))
+
+    def post(self,request):
+        pass
 class ProductMediaList(APIView):
     def get(self, request):
         pass

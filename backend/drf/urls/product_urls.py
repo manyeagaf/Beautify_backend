@@ -8,4 +8,5 @@ urlpatterns = [
     path('media/<str:pk>/', product_views.ProductMediaDetail.as_view(),
          name='product-media'),
     path('category/<str:slug>/', product_views.ProductByCategory.as_view()),
+    path('reviews/<str:pk>/',product_views.ReviewsList.as_view(),name = 'review'),
 ]
