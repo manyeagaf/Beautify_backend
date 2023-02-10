@@ -55,6 +55,16 @@ class Category(MPTTModel):
         return self.name
 
 
+class SubCategory(models.Model):
+    slug = models.SlugField(max_length = 250,unique = True)
+    category = models.ForeignKey(Category,on_delete = models.CASCADE)
+    name = models.CharField(max_length = 200)
+    is_active = models.BooleanField(default = True)
+
+
+
+
+
 class ProductAttribute(models.Model):
     name = models.CharField(
         max_length=255,

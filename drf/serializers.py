@@ -4,21 +4,18 @@ from enum import unique
 from statistics import mode
 from wsgiref.validate import validator
 from rest_framework import serializers
-from product.models import Product, ProductAttribute, Stock, Category, Brand, Media, ProductAttributeValue,Review
+from product.models import (Product, ProductAttribute,
+ Stock, Category, Brand, Media, ProductAttributeValue,Review,SubCategory)
 from order.models import Order, OrderItem, PaymentMethod, ShippingAddress
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import make_password
 from user.models import CustomUser
 from django.db.models import Sum
-
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    
-    
     def validate(self, attrs):
         data = super().validate(attrs)
         serializer = UserSerializerWithToken(self.user).data
@@ -29,11 +26,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     isAdmin = serializers.SerializerMethodField(read_only=True)
-
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'name', 'isAdmin']
-
     def get_isAdmin(self, obj):
         return obj.is_staff
 
@@ -66,12 +61,24 @@ class ProductAttributeValueSerializer(serializers.ModelSerializer):
         read_only = True
 
 
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ['slug','name',]
+
+
 class CategorySerializer(serializers.ModelSerializer):
+    sub_category = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id','slug','name','is_active','image','sub_category']
         read_only = True
 
+
+    def get_sub_category(self,obj):
+        sub_categories = SubCategory.objects.filter(category = obj)
+        serializer = SubCategorySerializer(sub_categories,many = True)
+        return serializer.data
 
 class ProductMediaSerializer(serializers.ModelSerializer):
     img_url = serializers.SerializerMethodField()

@@ -30,7 +30,7 @@ class ProductByCategory(APIView,PageNumberPagination):
     """
     Return product by category
     """
-    page_size = 6
+    page_size = 4
 
 
     def get(self, request, slug=None):
@@ -48,7 +48,7 @@ class ProductsList(APIView,PageNumberPagination):
     # queryset = Product.objects.all()
     # serializer_class = ProductSerializer
     # pagination_class = StandardResultsSetPagination
-    page_size = 3
+    page_size = 4
     
     def get(self, request):
         products = Product.objects.all()

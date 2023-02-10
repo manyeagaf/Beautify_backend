@@ -19,6 +19,7 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
+from user.views import FacebookLogin,GithubLogin,GoogleLogin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,13 @@ urlpatterns = [
     path('api/orders/', include('drf.urls.order_urls')),
     path('api/users/', include('drf.urls.user_urls')),
     path('api-auth/', include('rest_framework.urls')),
+
+
+    #dj-rest-auth for social
+    path('dj-rest-auth/', include('dj_rest_auth.urls')), 
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('dj-rest-auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    path('dj-rest-auth/github/', GithubLogin.as_view(), name='github_login'),
+    path('dj-rest-auth/google/', GoogleLogin.as_view(), name='google_login')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
