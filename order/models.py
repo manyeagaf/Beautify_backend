@@ -34,6 +34,7 @@ class Order(models.Model):
     shipping_price = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True)
     payment_method = models.CharField(max_length=200, null=True, blank=True)
+    status = models.PositiveSmallIntegerField(choices = ((1,'pending'),(2,'shipped'),(3,'cancelled'),(4,'delivered')),default = 1)
 
     def __str__(self):
         return str(self.id)

@@ -42,6 +42,12 @@ class ProductByCategory(APIView,PageNumberPagination):
     def post(self, request):
         pass
 
+class BrandList(APIView,PageNumberPagination):
+    def get(self,request):
+        brands = Brand.objects.all()
+        serializer = BrandSerializer(brands,many = True)
+        return Response(serializer.data)
+
 
 class ProductsList(APIView,PageNumberPagination):
     

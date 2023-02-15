@@ -190,8 +190,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'shipping_address', 'total_price',
-                  'is_paid', 'is_delivered', 'order_items']
+        fields = ['id', 'user', 'shipping_address', 'total_price','paid_at','shipping_price','payment_method',
+                  'is_paid', 'is_delivered','delivered_at', 'order_items']
 
     def get_order_items(self, obj):
         order_items = obj.orderitem_set.all()

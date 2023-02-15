@@ -8,6 +8,7 @@ from drf.serializers import OrderItemSerializer, OrderSerializer,PaymentMethodSe
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+import json
 
 @api_view(['GET'])
 def getOrders(request):
@@ -49,12 +50,17 @@ def getOrderById(request, pk):
 def creatOrder(request):
     user = request.user
     data = request.data
-    order_items = data['order_items']
+    
+    address = json.loads(data['shipping_address'])
+    order_items =json.loads(data['order_items'])
+    
+    print(order_items)
+    print(address['address'])
     shipping_address = ShippingAddress.objects.create(
-        address=data['shipping_address']['address'],
-        postal_code=data['shipping_address']['postal_code'],
-        country=data['shipping_address']['country'],
-        city=data['shipping_address']['city'],
+        address=address['address'],
+        postal_code=address['postal_code'],
+        country=address['country'],
+        city=address['city'],
     )
     order = Order.objects.create(
         user=user,
