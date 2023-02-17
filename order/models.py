@@ -60,6 +60,11 @@ class OrderItem(models.Model):
 class PaymentMethod(models.Model):
     name = models.CharField(max_length = 200)
     slug = models.SlugField(max_length = 150)
+
+class PaymentTranSaction(models.Model):
+    order = models.OneToOneField(Order,on_delete = models.CASCADE)
+    amount = models.DecimalField(max_digits = 10,decimal_places = 2)
+    date = models.DateTimeField()
     
 
 
