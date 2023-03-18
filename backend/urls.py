@@ -22,11 +22,13 @@ from django.conf.urls.static import static
 from user.views import FacebookLogin,GithubLogin,GoogleLogin
 
 urlpatterns = [
+    path('',include('home.urls')),
     path('admin/', admin.site.urls),
     path('api/products/', include('drf.urls.product_urls')),
     path('api/orders/', include('drf.urls.order_urls')),
     path('api/users/', include('drf.urls.user_urls')),
     path('api-auth/', include('rest_framework.urls')),
+
 
 
     #dj-rest-auth for social

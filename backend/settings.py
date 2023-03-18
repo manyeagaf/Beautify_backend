@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'drf.apps.DrfConfig',
     'order.apps.OrderConfig',
     'user.apps.UserConfig',
+    'home',
 
     # External
     'mptt',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
     'drf_social_oauth2',
+    
 
 ]
 SITE_ID = 1
